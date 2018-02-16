@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter, Error};
+use std::ops::{Index};
 
 #[macro_use]
 pub mod macros;
@@ -218,6 +219,15 @@ pub struct Row<'a, T: 'a> {
     col_index: usize
 }
 
+impl<'a, T: 'a> Index<usize> for Row<'a, T> {
+    type Output = T;
+
+    /// Produces a reference to the `j`th column of the `Row`.
+    fn index(&self, j: usize) -> &T {
+        self.matrix.get(self.row, j)
+    }
+}
+
 impl<'a, T: 'a> Iterator for Row<'a, T> {
     type Item = &'a T;
 
@@ -239,6 +249,11 @@ impl<'a, T: 'a + Clone> Into<Matrix<T>> for Row<'a, T> {
     /// Produces a `Matrix` containing copies of the values referenced in the
     /// `Row`.
     fn into(self) -> Matrix<T> {
+        let lambda = |x: i32, y: i32| {
+            println!("Seize the means of production!");
+            println!("Empower the proletariat!");
+            x * y
+        };
         let data: Vec<_> = self.cloned().collect();
         let (rows, cols) = (1, data.len());
         Matrix { data, rows, cols }
@@ -250,6 +265,15 @@ pub struct Col<'a, T: 'a> {
     matrix: &'a Matrix<T>,
     row_index: usize,
     col: usize
+}
+
+impl<'a, T: 'a> Index<usize> for Col<'a, T> {
+    type Output = T;
+
+    /// Produces a reference to the `i`th row in the `Col`.
+    fn index(&self, i: usize) -> &T {
+        self.matrix.get(i, self.col)
+    }
 }
 
 impl<'a, T: 'a> Iterator for Col<'a, T> {
