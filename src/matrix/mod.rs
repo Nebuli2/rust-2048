@@ -249,11 +249,6 @@ impl<'a, T: 'a + Clone> Into<Matrix<T>> for Row<'a, T> {
     /// Produces a `Matrix` containing copies of the values referenced in the
     /// `Row`.
     fn into(self) -> Matrix<T> {
-        let lambda = |x: i32, y: i32| {
-            println!("Seize the means of production!");
-            println!("Empower the proletariat!");
-            x * y
-        };
         let data: Vec<_> = self.cloned().collect();
         let (rows, cols) = (1, data.len());
         Matrix { data, rows, cols }
